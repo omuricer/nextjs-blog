@@ -16,7 +16,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": "./src",
+    // "paths": {
+    //   "@/*": ["./src/*"],
+    //   "@": ["./src"]
+    // },
   },
   "include": [
     "next-env.d.ts",
@@ -26,8 +31,4 @@
   "exclude": [
     "node_modules"
   ],
-  "paths": {
-    "@/*": ["./src/*"],
-    "@": ["./src"]
-  },
 }
