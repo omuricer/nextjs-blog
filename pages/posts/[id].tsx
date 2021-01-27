@@ -1,10 +1,5 @@
 // import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
-import {
-  GetStaticProps,
-  GetStaticPaths,
-  GetServerSideProps,
-  InferGetStaticPropsType,
-} from "next";
+import { GetStaticProps, GetStaticPaths } from "next";
 
 import Layout from "../../components/layout";
 import { getAllPostsIds, getPostData } from "../../lib/posts";
@@ -21,20 +16,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const postData = await getPostData(params.id);
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const postData = await getPostData(params.id as string);
   return {
-    props: {
-      ...postData,
-    },
+    props: postData,
   };
 };
 
-const Post: React.FC<{
+interface Props {
   title: string;
   date: string;
   contentHtml: string;
-}> = (props) => {
+}
+const Post: React.FC<Props> = (props) => {
   return (
     <Layout>
       <Head>

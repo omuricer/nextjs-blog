@@ -2,21 +2,33 @@ import Head from "next/head";
 import Layout, { siteTitle } from "../components/layout";
 import utilStyles from "../styles/utils.module.css";
 import { getSortedPostsData } from "../lib/posts";
-// import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import Date from "../components/date";
 import Link from "next/link";
 
-// export async function getStaticProps(context): GetStaticProps {
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const allPostsData = await getSortedPostsData();
   return {
     props: {
-      allPostsData,
+      posts: allPostsData.map((post) => {
+        return {
+          id: post.id,
+          date: post.date as string,
+          title: post.title as string,
+        };
+      }),
     },
   };
-}
+};
 
-export default function Home({ allPostsData }) {
+interface Props {
+  posts: {
+    id: string;
+    date: string;
+    title: string;
+  }[];
+}
+const Home: React.FC<Props> = (props) => {
   return (
     <Layout home>
       <Head>
@@ -34,7 +46,7 @@ export default function Home({ allPostsData }) {
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
         <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
+          {props.posts.map(({ id, date, title }) => (
             <li className={utilStyles.listItem} key={id}>
               <Link href={`/posts/${id}`}>
                 <a>{title}</a>
@@ -49,4 +61,5 @@ export default function Home({ allPostsData }) {
       </section>
     </Layout>
   );
-}
+};
+export default Home;
