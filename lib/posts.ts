@@ -9,26 +9,8 @@ const postsDirectory = path.join(process.cwd(), "posts");
 export async function getAllPostsIds() {
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
-  return new Promise<
-    {
-      params: {
-        id: String;
-      };
-    }[]
-  >((resolve) => {
-    resolve(
-      fileNames.map((fileName): {
-        params: {
-          id: String;
-        };
-      } => {
-        return {
-          params: {
-            id: fileName.replace(/\.md$/, ""),
-          },
-        };
-      })
-    );
+  return new Promise<string[]>((resolve) => {
+    resolve(fileNames.map((fileName) => fileName.replace(/\.md$/, "")));
   });
 }
 

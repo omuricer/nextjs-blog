@@ -1,39 +1,53 @@
+// import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import {
+  GetStaticProps,
+  GetStaticPaths,
+  GetServerSideProps,
+  InferGetStaticPropsType,
+} from "next";
+
 import Layout from "../../components/layout";
 import { getAllPostsIds, getPostData } from "../../lib/posts";
 import Head from "next/head";
 import Date from "../../components/date";
 import utilStyles from "../../styles/utils.module.css";
 
-export async function getStaticPaths() {
-  const paths = await getAllPostsIds();
+export const getStaticPaths: GetStaticPaths = async () => {
+  const ids = await getAllPostsIds();
+  const paths = ids.map((id) => ({ params: { id: id } }));
   return {
     paths,
     fallback: false,
   };
-}
+};
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const postData = await getPostData(params.id);
   return {
     props: {
-      postData,
+      ...postData,
     },
   };
-}
+};
 
-export default function Post({ postData }) {
+const Post: React.FC<{
+  title: string;
+  date: string;
+  contentHtml: string;
+}> = (props) => {
   return (
     <Layout>
       <Head>
-        <title>{postData.title}</title>
+        <title>{props.title}</title>
       </Head>
       <article>
-        <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+        <h1 className={utilStyles.headingXl}>{props.title}</h1>
         <div className={utilStyles.lightText}>
-          <Date dateString={postData.date} />
+          <Date dateString={props.date} />
         </div>
-        <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: props.contentHtml }} />
       </article>
     </Layout>
   );
-}
+};
+export default Post;
