@@ -38,7 +38,6 @@ export const getAllPostsIdsFromFireStore = async (): Promise<string[]> => {
     console.error("Error adding document: ", error);
   }
   console.log("Document written with ID: ", docRef.id);
-
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
   return new Promise<string[]>((resolve) => {
