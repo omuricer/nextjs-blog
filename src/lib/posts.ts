@@ -3,10 +3,41 @@ import path from "path";
 import matter from "gray-matter";
 import remark from "remark";
 import html from "remark-html";
+import firebase from "firebase";
+import firestore from "firebase/firestore";
+import admin from "firebase-admin";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
 export const getAllPostsIds = async (): Promise<string[]> => {
+  // Get file names under /posts
+  const fileNames = fs.readdirSync(postsDirectory);
+  return new Promise<string[]>((resolve) => {
+    resolve(fileNames.map((fileName) => fileName.replace(/\.md$/, "")));
+  });
+};
+export const getAllPostsIdsFromFireStore = async (): Promise<string[]> => {
+  firebase.initializeApp({
+    apiKey: process.env.FIRE_STORE_API_KEY,
+    authDomain: process.env.FIRE_STORE_AUTH_DOMAIN,
+    projectId: process.env.FIRE_STORE_PROJECT_ID,
+    // storageBucket: process.env.FIRE_STORE_STORAGE_BUKET,
+    // messagingSenderId: process.env.FIRE_STORE_MESSAGING_SENDER_ID,
+    // appId: process.env.FIRE_STORE_APP_ID,
+    // measurementId: process.env.FIRE_STORE_MEASUREMENT_ID,
+  });
+  let db = firebase.firestore();
+  let docRef;
+  try {
+    docRef = await db.collection("users").add({
+      first: "Ada",
+      last: "Lovelace",
+      born: 1815,
+    });
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+  console.log("Document written with ID: ", docRef.id);
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
   return new Promise<string[]>((resolve) => {

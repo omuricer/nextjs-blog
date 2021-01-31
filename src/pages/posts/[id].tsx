@@ -2,13 +2,17 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 
 import Layout from "components/layout";
-import { getAllPostsIds, getPostData } from "lib/posts";
+import {
+  getAllPostsIds,
+  getAllPostsIdsFromFireStore,
+  getPostData,
+} from "lib/posts";
 import Head from "next/head";
 import Date from "components/date";
 import utilStyles from "styles/utils.module.css";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await getAllPostsIds();
+  const ids = await getAllPostsIdsFromFireStore();
   const paths = ids.map((id) => ({ params: { id: id } }));
   return {
     paths,
